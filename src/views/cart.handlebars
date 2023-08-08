@@ -1,27 +1,39 @@
-<h1>Carrito</h1>
-<section class="cart">
-    <h3>Este es tu carrito podras ver lo que estas comprando</h3>
+<div style="text-align: center;">
+    <h1>Cart</h1>
+    {{#each formattedData.payload}}
+    <div id={{this.id}} style="display: inline-block; margin: 10px; border: 5px solid black;">
+        <img src="{{this.thumbnails}}" alt="product image" width="200" height="200">
+        <h2>{{this.title}}</h2>
+        <p>{{this.description}}</p>
+        <p>Cantidad: {{this.quantity}}</p>
 
- <ul class="list-products">   
-     {{#each products}}
-         <li class="card-cart">  
-            <div class="card-img">
-                <div class="img-div"> 
-                <img class="img-card" src='/img{{this.thumbnail}}'/>
-            </div>
-            </div>         
-           <div class="info-card">
-            <h3 class="title-card">{{this.title}}</h5> 
-            <p class="description-card">{{this.description}}   </p>
-            <p class="cantidad"><b>Cantidad</b> {{this.quantity}}   </p>
-            <p class="price-card"><b>$</b> {{this.price}} </p>
-            <p class="price-card"><b>Subtotal</b>: <b>$</b> {{this.subtotal}} </p>
-            <a type="button" onclick='deletProductToCart({{../cartString}},"{{this.id}}") ' value="{{this.id}}" class="deletToCart" id='{{this.id}}'><i class="bi bi-trash"></i></a>
+        <button onclick="deleteCart('{{this.cid}}','{{this.id}}')">Eliminar</button>
+    </div>
+    {{/each}}
+</div>
 
-           </div>
+<script>
+    function deleteCart(cid, pid) {
+        fetch(`/api/carts/${cid}/product/${pid}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (response.ok) {
+                    // Hacer algo si la solicitud fue exitosa
+                    alert("producto eliminado");
+                    const element = document.getElementById(pid);
+                    if (element) {
+                        element.remove();
+                    }
+                } else {
+                    // Hacer algo si la solicitud no fue exitosa
+                    alert('Error al eliminar el producto');
+                }
+            })
+            .catch(error => {
+                // Hacer algo si ocurrió un error al enviar la solicitud
+                alert('Error de solicitud');
+            });
+    }
 
-         </li>
-    {{/each}} 
-    <script></script>
-    </ul>
-</section>
+</script>

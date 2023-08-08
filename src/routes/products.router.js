@@ -1,15 +1,17 @@
-import  express  from "express";
- export const productsRouter = express.Router();
+import { Router } from "express";
 import { uploader } from "../utils.js";
-import { productsController } from "../controller/products.controller.js";
+import {productsController} from "../controllers/products.controller.js";
+import { isAdmin } from "../middlewares/auth.js";
 
-//GET = OBTENER TODOS
-productsRouter.get("/", productsController.getAll);
-//GET = OBTENER POR ID
-productsRouter.get('/:id', productsController.getbyId);
-//POST = CREAR
-productsRouter.post('/', uploader.single('thumbnail') ,  productsController.createOne);
-//PUT = MODIFICAR
-productsRouter.put('/:id', productsController.updateOne);
-//ELIMINAR
-productsRouter.delete('/:id', productsController.deletOne);
+export const pdctRouter = Router()
+
+
+pdctRouter.get('/', productsController.getAll);
+
+pdctRouter.get("/:pid", productsController.getOne);
+
+pdctRouter.post("/", uploader.single('thumbnails'), isAdmin, productsController.createOne);
+
+pdctRouter.put("/:id", uploader.single('thumbnails'),isAdmin, productsController.updateOne); 
+
+pdctRouter.delete("/:id",isAdmin, productsController.delete);

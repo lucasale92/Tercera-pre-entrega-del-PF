@@ -1,21 +1,40 @@
-import  express  from "express";
- export const authRouter = express.Router();
-import { isUser } from "../middlewares/auth.js";
-import passport from "passport";
-import { authController } from "../controller/auth.controller.js";
+import express from 'express';
+import passport from 'passport';
+import { isAdmin, isUser, isLoggedin,  } from '../middlewares/auth.js';
+import { sessionController } from '../controllers/auth.controller.js';
 
-authRouter.get("/login", authController.renderLogin);
 
-authRouter.post('/login', passport.authenticate('login', { failureRedirect: '/auth/faillogin' }),authController.login);
- 
-authRouter.get("/perfil",isUser, authController.perfil);
-    
-authRouter.get('/logout', authController.logut)
+export const authRouter = express.Router();
 
-authRouter.post('/register', passport.authenticate('register', { failureRedirect: '/auth/failregister' }), authController.register);
-          
-authRouter.get('/failregister', authController.failRegister);
+//-------------------------------------- para probar la session -----------------------
+authRouter.get('/session/current', sessionController.session);
 
-authRouter.get('/faillogin', authController.failLogin);
-          
-authRouter.get("/register", authController.renderRegister);
+//------------------------------------passport local------------------------
+authRouter.get("/failregister", sessionController.failReg);
+
+authRouter.get('/faillogin', sessionController.failLogin);
+
+authRouter.get('/register', sessionController.register);
+
+authRouter.post('/register', passport.authenticate('register', { failureRedirect: '/auth/failregister' }), sessionController.registerOk);
+
+authRouter.get('/login', sessionController.login);
+
+authRouter.post('/login', passport.authenticate('login', { failureRedirect: '/auth/faillogin' }), sessionController.loginOk);
+
+authRouter.get('/logout', sessionController.logout);
+
+authRouter.get("/profile", isLoggedin, sessionController.profile);
+
+//--------------------------------github -----------------------------------
+
+authRouter.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
+
+authRouter.get("/github/callback", passport.authenticate("github", { failureRedirect: "/error" }), sessionController.callbackProfile);
+
+//-------------------------------- Google -----------------------------------
+/*
+authRoutes.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+authRoutes.get("/google/callback",passport.authenticate("google", { failureRedirect: "/auth/fail-register" }), sessionController.googleCallback);
+*/

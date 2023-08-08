@@ -1,13 +1,38 @@
 export function isUser(req, res, next) {
-  if (req?.session?.user?.email) {
-    return next()
+  const userRole = req.session?.user?.role;
+  if (userRole === 'user') {
+      return next();
   }
-  return res.status(500).render("error", { error: "no esta registrado" })
+  return res.status(401).render('error', { error: 'error de autenticacion!' });
 }
 
+
 export function isAdmin(req, res, next) {
-  if (req?.session?.admin) {
-    return next()
+  const userRole = req.session?.user?.role;
+  if (userRole === 'admin') {
+      return next();
   }
-  return res.status(500).render("error", { error: "No es Admin" })
-} 
+  return res.status(403).render('error', { error: 'error de autorización!' });
+}
+
+export function isLoggedin (req, res, next) {
+  if (req.isAuthenticated()) {
+      return next();
+  }
+  return res.redirect("/products");
+};
+
+export function redirectIfLoggedIn (req, res, next) {
+  if (req.isAuthenticated()) {
+      return res.redirect("/products");
+  }
+  return next();
+};
+
+export function isUserCartOwner (req, res, next) {
+  console.log(req.session.user.cartId, req.params.cid );
+  if (req.session?.user?.cartId == req.params.cid) {
+      return next();
+  }
+  return res.status(403).render('error', { error: 'error de autorización!' });
+};
