@@ -1,6 +1,6 @@
 import CartModel from '../mongo/models/cart.model.js';
 import ProductModel from '../mongo/models/products.model.js'
-import ProductManager from './prouctManagerMongoDB.js';
+import ProductManager from '../mongo/prouctManagerMongoDB.js';
 
 class cartMngr {
     getCarts = async () => {
