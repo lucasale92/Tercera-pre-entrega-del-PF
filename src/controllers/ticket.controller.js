@@ -1,4 +1,4 @@
-import TicketService from '../services/ticket.service.js';
+import TicketService from '../services/ticket.services.js';
 
 class TicketController{
     async purchase (req, res) {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { isAdmin, isLoggedin, isUser } from '../middlewares/auth.js';
-import { viewsController } from "../controllers/view.controller.js";
+import { viewsController } from "../controllers/views.controller.js";
 
 
 export const viewRouter = Router()
